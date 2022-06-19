@@ -170,22 +170,22 @@ class PictureGet private constructor(context: Context) {
                         Uri.withAppendedPath(externalContentUri, id.toString()).toString()
                     val folder =
                         cursor!!.getString(cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
-                    val datapath =
+                    val dataPath =
                         cursor!!.getString(cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
-                    val bucket_id =
+                    val bucketId =
                         cursor!!.getInt(cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
-                    var folderpaths = datapath.substring(0, datapath.lastIndexOf("$folder/"))
+                    var folderpaths = dataPath.substring(0, dataPath.lastIndexOf("$folder/"))
                     folderpaths = "$folderpaths$folder/"
-                    if (!picturePaths.contains(bucket_id)) {
-                        picturePaths.add(bucket_id)
-                        photoFolder.bucket_id = bucket_id
+                    if (!picturePaths.contains(bucketId)) {
+                        picturePaths.add(bucketId)
+                        photoFolder.bucketId = bucketId
                         photoFolder.folderPath = folderpaths
                         photoFolder.folderName = folder
                         photoFolder.photos.add(pictureContent)
                         absolutePictureFolders.add(photoFolder)
                     } else {
                         for (folderX in absolutePictureFolders) {
-                            if (folderX.bucket_id == bucket_id) {
+                            if (folderX.bucketId == bucketId) {
                                 folderX.photos.add(pictureContent)
                             }
                         }

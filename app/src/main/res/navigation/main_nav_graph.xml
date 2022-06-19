@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph.xml"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.main.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_videoInfoFragment"
+            app:destination="@id/videoInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.detail.DetailFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/activity_detail">
+        <action
+            android:id="@+id/action_detailFragment_to_videoInfoFragment"
+            app:destination="@id/videoInfoFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment" />
+        <argument
+            android:name="bucketId"
+            app:argType="integer"
+            />
+        <action
+            android:id="@+id/action_detailFragment_to_pictureInfoFragment"
+            app:destination="@id/pictureInfoFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/videoInfoFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.info.VideoInfoFragment"
+        android:label="VideoInfoFragment"
+        tools:layout="@layout/fragment_info">
+        <argument
+            android:name="videoContent"
+            app:argType="com.chnouman.imagevideogallery.models.VideoContent" />
+    </dialog>
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.play.VideoPlayerFragment"
+        android:label="VideoPlayerFragment"
+        tools:layout="@layout/fragment_video_player"
+        >
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <argument
+            android:name="allVideos"
+            app:argType="com.chnouman.imagevideogallery.models.VideoContent[]" />
+    </fragment>
+    <dialog
+        android:id="@+id/pictureInfoFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.info.PictureInfoFragment"
+        android:label="PictureInfoFragment"
+        tools:layout="@layout/fragment_info"
+        >
+        <argument
+            android:name="picture"
+            app:argType="com.chnouman.imagevideogallery.models.PictureContent" />
+    </dialog>
+
+</navigation>

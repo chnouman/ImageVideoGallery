@@ -163,14 +163,14 @@ class VideoGet private constructor(context: Context) {
                 folderpaths = "$folderpaths$folder/"
                 if (!videoPaths.contains(bucket_id)) {
                     videoPaths.add(bucket_id)
-                    videoFolder.bucket_id = bucket_id
+                    videoFolder.bucketId = bucket_id
                     videoFolder.folderPath = folderpaths
                     videoFolder.folderName = folder
                     videoFolder.videoFiles.add(videoContent)
                     allVideoFolders.add(videoFolder)
                 } else {
                     for (i in allVideoFolders.indices) {
-                        if (allVideoFolders[i].bucket_id == bucket_id) {
+                        if (allVideoFolders[i].bucketId == bucket_id) {
                             allVideoFolders[i].videoFiles.add(videoContent)
                         }
                     }

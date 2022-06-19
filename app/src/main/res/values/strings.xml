@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MyCustomGalleryApp</string>
+    <string name="counter">counter</string>
+    <string name="duration">duration</string>
+    <string name="filename">Filename</string>
+    <string name="fullpath">Fullpath</string>
+    <string name="size">Size</string>
+    <string name="all_images">All Images</string>
+    <string name="all_videos">All Videos</string>
 </resources>

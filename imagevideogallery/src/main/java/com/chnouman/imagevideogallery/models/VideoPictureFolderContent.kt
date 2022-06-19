@@ -6,15 +6,15 @@ class VideoPictureFolderContent {
         private set
     var folderName: String? = null
     var folderPath: String? = null
-    var bucket_id = 0
+    var bucketId = 0
 
     constructor() {
         videoFiles = ArrayList()
     }
 
     constructor(
-        folderPath: String?, folderName: String?, currentVideoFiles: ArrayList<VideoContent?>?,
-        pictureContents: ArrayList<PictureContent>?
+        folderPath: String?, folderName: String?, currentVideoFiles: ArrayList<VideoContent>,
+        pictureContents: ArrayList<PictureContent>
     ) {
         var videoFiles = currentVideoFiles
         this.folderName = folderName

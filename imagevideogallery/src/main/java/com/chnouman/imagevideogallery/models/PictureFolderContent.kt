@@ -5,7 +5,7 @@ class PictureFolderContent {
     var photos: ArrayList<PictureContent>
     var folderName: String? = null
     var folderPath: String? = null
-    var bucket_id = 0
+    var bucketId = 0
 
     constructor() {
         photos = ArrayList()
