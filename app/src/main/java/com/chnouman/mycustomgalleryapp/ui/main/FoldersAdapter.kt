@@ -69,7 +69,7 @@ class FoldersAdapter(
                     } else {
                         play.gone()
                     }
-                    videoPreview.pictureFit(imageUri?:"")
+                    videoPreview.picture(imageUri?:"")
                     binding.folderName.text = if (folderName.isNullOrBlank()) {
                         this.folderNameStringId?.let {
                             binding.folderName.context.getString(it)

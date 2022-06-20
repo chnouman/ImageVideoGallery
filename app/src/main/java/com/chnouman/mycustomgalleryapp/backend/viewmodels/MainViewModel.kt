@@ -22,15 +22,25 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
     val foldersData: LiveData<MutableList<FolderWithOneImage>>
         get() = _foldersData
 
+    private val _totalImages = MutableLiveData<Pair<Int, Int>>()
+    val totalImages: LiveData<Pair<Int, Int>>
+        get() = _totalImages
+
+/*    private val _totalVideos = MutableLiveData<Int>()
+    val totalVideos: LiveData<Int>
+        get() = _totalVideos*/
+
     fun getFolders() {
+        Log.d("TEST", "getFoldersCall: ")
         viewModelScope.launch {
             val allVideoFolders: MutableList<VideoFolderContent> = galleryRepository
                 .getAllVideoFolders(VideoGet.externalContentUri)
             val allPictureFolders: MutableList<PictureFolderContent> =
                 galleryRepository.getAllPictureFolders()
-
             //check if we have some content to show
             val allFoldersWithOneImage = mutableListOf<FolderWithOneImage>().apply {
+                val totalImagesCount = Utils.getTotalImagesCount(allPictureFolders)
+                val totalVideosCount = Utils.getTotalVideosCount(allVideoFolders)
                 if (allPictureFolders.isNotEmpty()) {
                     add(
                         FolderWithOneImage(
@@ -51,15 +61,16 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
                         )
                     )
                 }
+                _totalImages.value = Pair(totalImagesCount, totalVideosCount)
             }
 
 
             if (allVideoFolders.isNotEmpty() || allPictureFolders.isNotEmpty()) {
-                allFoldersWithOneImage.addAll(
-                    combinePicturesAndVideos(
-                        allVideoFolders,
-                        allPictureFolders
-                    )
+
+                combinePicturesAndVideos(
+                    allFoldersWithOneImage,
+                    allVideoFolders,
+                    allPictureFolders
                 )
             } else if (allPictureFolders.isEmpty() && allVideoFolders.isNotEmpty()) {
                 //set image for first folder also
@@ -81,119 +92,119 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
             }
             _foldersData.postValue(allFoldersWithOneImage)
         }
-        }
+    }
 
-        private fun combinePicturesAndVideos(
-            allVideoFolders: MutableList<VideoFolderContent>,
-            allPictureFolders: MutableList<PictureFolderContent>
-        ): MutableList<FolderWithOneImage> {
-            val folders = mutableListOf<FolderContent>()
-            val resultFolder = mutableListOf<FolderWithOneImage>()
-            //combine the folders
-            val combinedBucketIds = mutableListOf<Int>()
-            for (videosFolderContent in allVideoFolders) {
-                var videoPictureFolder = false
-                lateinit var videoPictureFolderContent: VideoPictureFolderContent
-                for (pictureFolder in allPictureFolders) {
-                    if (videosFolderContent.bucketId == pictureFolder.bucketId
-                    ) {
-                        //combine the data
-                        videoPictureFolderContent = VideoPictureFolderContent(
-                            videosFolderContent.folderPath, videosFolderContent.folderName,
-                            videosFolderContent.videoFiles, pictureFolder.photos
-                        )
-                        videoPictureFolderContent.bucketId = videosFolderContent.bucketId
-                        combinedBucketIds.add(videosFolderContent.bucketId)
-                        videoPictureFolder = true
-                        continue
-                    }
-                }
-                if (videoPictureFolder) {
-                    folders.add(videoPictureFolderContent)
-                } else {
-                    //not found
-                    folders.add(videosFolderContent)
-                }
-            }
-
-            //make sure all the picture folders also added
+    private fun combinePicturesAndVideos(
+        allFoldersWithOneImage: MutableList<FolderWithOneImage>,
+        allVideoFolders: MutableList<VideoFolderContent>,
+        allPictureFolders: MutableList<PictureFolderContent>
+    ) {
+        val folders = mutableListOf<FolderContent>()
+        val resultFolder = mutableListOf<FolderWithOneImage>()
+        //combine the folders
+        val combinedBucketIds = mutableListOf<Int>()
+        for (videosFolderContent in allVideoFolders) {
+            var videoPictureFolder = false
+            lateinit var videoPictureFolderContent: VideoPictureFolderContent
             for (pictureFolder in allPictureFolders) {
-                var isFoundAsCombine = false
-                for (bucketId in combinedBucketIds) {
-                    if (pictureFolder.bucketId == bucketId) {
-                        isFoundAsCombine = true
-                        continue
-                    }
-                }
-                if (!isFoundAsCombine) {
-                    folders.add(pictureFolder)
-                }
-            }
-            var firstImage = ""
-            var firstVideo = ""
-            for (i in folders.indices) {
-                val currentFolder = folders[i]
-                var path: String? = ""
-                if ((i == 0 && currentFolder is PictureFolderContent ||
-                            (i == 0 && currentFolder is VideoFolderContent) ||
-                            (i == 0 && currentFolder is PictureFolderContent && folders[i + 1] is VideoFolderContent))
+                if (videosFolderContent.bucketId == pictureFolder.bucketId
                 ) {
-                    //set paths later
-                } else {
-                    path = Utils.getPath(currentFolder)
-                    if (currentFolder is PictureFolderContent && firstImage.isEmpty()) {
-                        firstImage = path ?: ""
-                    } else if (currentFolder is VideoFolderContent && firstVideo.isEmpty()) {
-                        firstVideo = path ?: ""
-                    }
-                }
-                val folderName = Utils.getFolderName(folders[i])
-                //get count
-                val totalCount = when (folderName) {
-                    "" -> {
-                        if (Utils.getFolderNameStringId(folders[i]) == R.string.all_images) {
-                            Utils.getTotalImagesCount(allPictureFolders)
-                        } else if (Utils.getFolderNameStringId(folders[i]) == R.string.all_videos) {
-                            Utils.getTotalVideosCount(allVideoFolders)
-                        } else {
-                            0
-                        }
-                    }
-                    else -> {
-                        Log.d(
-                            "TEST",
-                            "combinePicturesAndVideos: total  = ${Utils.getTotal(folders[i])} ${folders[i]}"
-                        )
-                        Utils.getTotal(folders[i])
-                    }
-                }
-                Log.d("TEST", "getFoldersBucket: $folderName ${Utils.getBucketId(folders[i])}")
-                resultFolder.add(
-                    FolderWithOneImage(
-                        path ?: "",
-                        folderName ?: "",
-                        totalCount,
-                        Utils.getMediaType(folders[i]),
-                        //check if folder name is null than set the folderNameStringId
-                        if (folderName.isNullOrBlank()) Utils.getFolderNameStringId(folders[i]) else -1,
-                        bucketId = Utils.getBucketId(folders[i])
+                    //combine the data
+                    videoPictureFolderContent = VideoPictureFolderContent(
+                        videosFolderContent.folderPath, videosFolderContent.folderName,
+                        videosFolderContent.videoFiles, pictureFolder.photos
                     )
-                )
+                    videoPictureFolderContent.bucketId = videosFolderContent.bucketId
+                    combinedBucketIds.add(videosFolderContent.bucketId)
+                    videoPictureFolder = true
+                    continue
+                }
             }
-            //set path for all images and all videos here
-            //check if gallery is for all images
-            val firstFolder = resultFolder[0]
-            if (firstFolder.folderNameStringId == R.string.all_images) {
-                resultFolder[0].imageUri = firstImage
+            if (videoPictureFolder) {
+                folders.add(videoPictureFolderContent)
+            } else {
+                //not found
+                folders.add(videosFolderContent)
             }
-            if (firstFolder.folderNameStringId == R.string.all_videos) {
-                resultFolder[0].imageUri = firstVideo
-            }
-            if ((firstFolder.folderNameStringId == R.string.all_images) && resultFolder[1].folderNameStringId == R.string.all_videos) {
-                resultFolder[1].imageUri = firstVideo
-            }
-            return resultFolder
         }
 
+        //make sure all the picture folders also added
+        for (pictureFolder in allPictureFolders) {
+            var isFoundAsCombine = false
+            for (bucketId in combinedBucketIds) {
+                if (pictureFolder.bucketId == bucketId) {
+                    isFoundAsCombine = true
+                    continue
+                }
+            }
+            if (!isFoundAsCombine) {
+                folders.add(pictureFolder)
+            }
+        }
+        var firstImage = ""
+        var firstVideo = ""
+        for (i in folders.indices) {
+            val currentFolder = folders[i]
+            val path: String? = Utils.getPath(currentFolder)
+            if (currentFolder is PictureFolderContent && firstImage.isEmpty()) {
+                firstImage = path ?: ""
+            } else if (currentFolder is VideoFolderContent && firstVideo.isEmpty()) {
+                firstVideo = path ?: ""
+            }
+            val folderName = Utils.getFolderName(folders[i])
+            //get count
+            val totalCount = when (folderName) {
+                "" -> {
+                    if (Utils.getFolderNameStringId(folders[i]) == R.string.all_images) {
+                        Utils.getTotalImagesCount(allPictureFolders)
+                    } else if (Utils.getFolderNameStringId(folders[i]) == R.string.all_videos) {
+                        Utils.getTotalVideosCount(allVideoFolders)
+                    } else {
+                        0
+                    }
+                }
+                else -> {
+                    Log.d(
+                        "TEST",
+                        "combinePicturesAndVideos: total  = ${Utils.getTotal(folders[i])} ${folders[i]}"
+                    )
+                    Utils.getTotal(folders[i])
+                }
+            }
+            Log.d("TEST", "getFoldersBucket: $folderName ${Utils.getBucketId(folders[i])}")
+            resultFolder.add(
+                FolderWithOneImage(
+                    path ?: "",
+                    folderName ?: "",
+                    totalCount,
+                    Utils.getMediaType(folders[i]),
+                    //check if folder name is null than set the folderNameStringId
+                    if (folderName.isNullOrBlank()) Utils.getFolderNameStringId(folders[i]) else -1,
+                    bucketId = Utils.getBucketId(folders[i])
+                )
+            )
+        }
+        allFoldersWithOneImage.addAll(resultFolder)
+        setAllFolderImages(allFoldersWithOneImage, firstImage, firstVideo)
+    }
+
+    private fun setAllFolderImages(
+        allFoldersWithOneImage: MutableList<FolderWithOneImage>,
+        firstImage: String,
+        firstVideo: String
+    ) {
+        //set path for all images and all videos here
+        //check if gallery is for all images
+        val firstFolder = allFoldersWithOneImage[0]
+        if (firstFolder.folderNameStringId == R.string.all_images) {
+            allFoldersWithOneImage[0].imageUri = firstImage
+        }
+        if (firstFolder.folderNameStringId == R.string.all_videos) {
+            allFoldersWithOneImage[0].imageUri = firstVideo
+        }
+        if ((firstFolder.folderNameStringId == R.string.all_images) && allFoldersWithOneImage[1].folderNameStringId == R.string.all_videos) {
+            allFoldersWithOneImage[1].imageUri = firstVideo
+        }
+    }
 }
 

@@ -12,10 +12,12 @@
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+ />
         <action
             android:id="@+id/action_mainFragment_to_videoInfoFragment"
-            app:destination="@id/videoInfoFragment" />
+            app:destination="@id/videoInfoFragment"
+        />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -31,6 +33,9 @@
         <argument
             android:name="bucketId"
             app:argType="integer" />
+        <argument
+            android:name="folderName"
+            app:argType="string" />
         <action
             android:id="@+id/action_detailFragment_to_pictureInfoFragment"
             app:destination="@id/pictureInfoFragment" />

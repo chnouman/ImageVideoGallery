@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -31,27 +32,32 @@ class PreviewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.picturePager.apply {
-            offscreenPageLimit = 3
-             val adapter = PicturePagerAdapter()
-            this.adapter = adapter
-            setCurrentItem(args.position, true)
-            binding.counterTextView.text = "${args.position}/" + args.pictures.size
-            this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
+        binding.apply {
+            backIcon.setOnClickListener { findNavController().popBackStack() }
+            picturePager.apply {
+                offscreenPageLimit = 3
+                val adapter = PicturePagerAdapter()
+                this.adapter = adapter
+                setCurrentItem(args.position, true)
+                binding.counterTextView.text =
+                    "${ args.position+1}/" + args.pictures.size
+                this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                    override fun onPageScrolled(
+                        position: Int,
+                        positionOffset: Float,
+                        positionOffsetPixels: Int
+                    ) {
+                    }
 
-                override fun onPageSelected(position: Int) {
-                    binding.counterTextView.text = "${position}/" + args.pictures.size
-                }
+                    override fun onPageSelected(position: Int) {
+                        binding.counterTextView.text =
+                            "${ position+1}/" + args.pictures.size
+                    }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                }
-            })
+                    override fun onPageScrollStateChanged(state: Int) {
+                    }
+                })
+            }
         }
     }
 

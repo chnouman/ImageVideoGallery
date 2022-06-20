@@ -21,19 +21,27 @@ class DetailFragment : Fragment() {
     private lateinit var binding: ActivityDetailBinding
     private val args: DetailFragmentArgs by navArgs()
     private val viewModel: DetailViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupObserver()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ActivityDetailBinding.inflate(
-            inflater, container, false
-        )
+        binding = ActivityDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.apply {
+            titleTextView.text = args.folderName
+            backIcon.setOnClickListener { findNavController().popBackStack() }
+        }
         binding.videoRecycler.apply {
             drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             hasFixedSize()
@@ -44,13 +52,11 @@ class DetailFragment : Fragment() {
 //            val numOfColumns = calculateNoOfColumns(240f)
             binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
         }
-
         viewModel.getContent(args.bucketId)
-        setupObserver()
     }
 
     private fun setupObserver() {
-        viewModel.bucketContent.observe(viewLifecycleOwner) { bucketContent ->
+        viewModel.bucketContent.observe(this) { bucketContent ->
             setupUpAndDisplayVideos(bucketContent)
         }
     }
@@ -65,14 +71,14 @@ class DetailFragment : Fragment() {
 
     private fun setupUpAndDisplayVideos(bucketContent: MutableList<Any>) {
 
-        val videoAdapter = DetailAdapter( bucketContent,
+        val videoAdapter = DetailAdapter(bucketContent,
             { position ->
                 //play video
                 if (bucketContent[position] is VideoContent)
                     playVideo(position, bucketContent)
                 if (bucketContent[position] is PictureContent)
                 //show picture information
-                    displayPictureInFragment(bucketContent as MutableList<PictureContent>, position)
+                    displayPictureInFragment(bucketContent, position)
             }
         ) { position ->
             //show video information
@@ -82,13 +88,23 @@ class DetailFragment : Fragment() {
     }
 
     private fun playVideo(position: Int, bucketContent: MutableList<Any>) {
-
-        findNavController().navigate(
-            DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
-                position,
-                (bucketContent as MutableList<VideoContent>).toTypedArray()
+        val videos = mutableListOf<VideoContent>()
+        if (args.bucketId != -2) {
+            videos.add(bucketContent[position] as VideoContent)
+            findNavController().navigate(
+                DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
+                    0,
+                    videos.toTypedArray()
+                )
             )
-        )
+        } else {
+            findNavController().navigate(
+                DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
+                    position,
+                    (bucketContent as MutableList<VideoContent>).toTypedArray()
+                )
+            )
+        }
     }
 
     private fun showVideoInfo(content: Any) {
@@ -106,14 +122,25 @@ class DetailFragment : Fragment() {
     }
 
     private fun displayPictureInFragment(
-        pictureList: MutableList<PictureContent>,
+        pictureList: MutableList<Any>,
         position: Int
     ) {
-        findNavController().navigate(
-            DetailFragmentDirections.actionDetailFragmentToPreviewFragment(
-                position,
-                pictureList.toTypedArray()
+        val pictures = mutableListOf<PictureContent>()
+        if (args.bucketId != -1 && pictures !is MutableList<PictureContent>) {
+            pictures.add(pictureList[position] as PictureContent)
+            findNavController().navigate(
+                DetailFragmentDirections.actionDetailFragmentToPreviewFragment(
+                    0,
+                    pictures.toTypedArray()
+                )
             )
-        )
+        } else {
+            findNavController().navigate(
+                DetailFragmentDirections.actionDetailFragmentToPreviewFragment(
+                    position,
+                    (pictureList as MutableList<PictureContent>).toTypedArray()
+                )
+            )
+        }
     }
 }

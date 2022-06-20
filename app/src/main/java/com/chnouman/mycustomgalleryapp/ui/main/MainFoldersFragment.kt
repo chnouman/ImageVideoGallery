@@ -14,6 +14,8 @@ import com.chnouman.imagevideogallery.Utils.getBucketId
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.FragmentMainBinding
 import com.chnouman.mycustomgalleryapp.backend.viewmodels.MainViewModel
+import com.chnouman.mycustomgalleryapp.utils.gone
+import com.chnouman.mycustomgalleryapp.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,16 +45,21 @@ class MainFoldersFragment : Fragment() {
     }
 
     private fun setupObserver() {
+        viewModel.totalImages.observe(this) {
+            binding.totalStatsTextView.text = getString(R.string.dummy_stats, it.first, it.second)
+        }
         viewModel.foldersData.observe(this) { folders ->
-            for (folder in folders) {
-                Log.d("TEST", "getFoldersV: ${folder.bucketId}")
-            }
+            Log.d("TEST", "getFoldersCall Observer:")
+            binding.progressBar.gone()
             foldersAdapter = FoldersAdapter(folders, { position ->
-                findNavController().navigate(
-                    MainFoldersFragmentDirections.actionMainFragmentToDetailFragment(
-                        folders[position].bucketId
+                val folderWithOneImage = folders[position]
+                folderWithOneImage.apply {
+                    findNavController().navigate(
+                        MainFoldersFragmentDirections.actionMainFragmentToDetailFragment(
+                            bucketId, folderName ?: folderNameStringId?.let { getString(it) } ?: ""
+                        )
                     )
-                )
+                }
             }, {
                 //onLong press
             })
@@ -90,6 +97,7 @@ class MainFoldersFragment : Fragment() {
                     GridLayoutManager(requireContext(), 2)
             }
         }
+        binding.progressBar.gone()
         viewModel.getFolders()
     }
 }
