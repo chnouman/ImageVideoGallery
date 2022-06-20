@@ -30,11 +30,13 @@
             app:destination="@id/videoPlayerFragment" />
         <argument
             android:name="bucketId"
-            app:argType="integer"
-            />
+            app:argType="integer" />
         <action
             android:id="@+id/action_detailFragment_to_pictureInfoFragment"
             app:destination="@id/pictureInfoFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_previewFragment"
+            app:destination="@id/previewFragment" />
     </fragment>
     <dialog
         android:id="@+id/videoInfoFragment"
@@ -49,8 +51,7 @@
         android:id="@+id/videoPlayerFragment"
         android:name="com.chnouman.mycustomgalleryapp.ui.play.VideoPlayerFragment"
         android:label="VideoPlayerFragment"
-        tools:layout="@layout/fragment_video_player"
-        >
+        tools:layout="@layout/fragment_video_player">
         <argument
             android:name="position"
             app:argType="integer" />
@@ -62,11 +63,22 @@
         android:id="@+id/pictureInfoFragment"
         android:name="com.chnouman.mycustomgalleryapp.ui.info.PictureInfoFragment"
         android:label="PictureInfoFragment"
-        tools:layout="@layout/fragment_info"
-        >
+        tools:layout="@layout/fragment_info">
         <argument
             android:name="picture"
             app:argType="com.chnouman.imagevideogallery.models.PictureContent" />
     </dialog>
+    <fragment
+        android:id="@+id/previewFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.preview.PreviewFragment"
+        android:label="PreviewFragment"
+        tools:layout="@layout/fragment_preview">
+        <argument
+            android:name="position"
+            app:argType="integer" />
+        <argument
+            android:name="pictures"
+            app:argType="com.chnouman.imagevideogallery.models.PictureContent[]" />
+    </fragment>
 
 </navigation>

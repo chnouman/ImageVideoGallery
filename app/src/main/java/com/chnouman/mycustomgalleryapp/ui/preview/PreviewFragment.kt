@@ -7,20 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.FragmentPreviewBinding
 import com.chnouman.mycustomgalleryapp.utils.ZoomOutPageTransformer
 
 class PreviewFragment : Fragment() {
-    private var allpics: ArrayList<PictureContent>? = null
-    private var currentPosition = 0
-    lateinit var binding: FragmentPreviewBinding
+     lateinit var binding: FragmentPreviewBinding
+    private val args: PreviewFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,31 +35,36 @@ class PreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.picturePager.apply {
-
             offscreenPageLimit = 3
             setPageTransformer(true, ZoomOutPageTransformer())
             val adapter = PicturePagerAdapter()
             this.adapter = adapter
-            setCurrentItem(currentPosition, true)
+            setCurrentItem(args.position, true)
         }
     }
 
     private inner class PicturePagerAdapter : PagerAdapter() {
+        @NonNull
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
+           /* val binding: PicturePagerItemBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(container.context),
+                R.layout.picture_pager_item, null, false
+            )*/
             val inflater =
                 container.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val pictureView = inflater.inflate(R.layout.picture_pager_item, null)
             val picturezone = pictureView.findViewById<ImageView>(R.id.picture_zone)
-            Glide.with(activity!!)
-                .load(Uri.parse(allpics!![position].photoUri))
+
+            Glide.with(requireActivity())
+                .load(Uri.parse(args.pictures[position].photoUri))
                 .apply(RequestOptions().fitCenter())
                 .into(picturezone)
-            (container as ViewPager).addView(pictureView)
-            return pictureView
+            (container as ViewPager).addView(picturezone)
+            return picturezone
         }
 
         override fun getCount(): Int {
-            return allpics!!.size
+            return args.pictures.size
         }
 
         override fun isViewFromObject(view: View, `object`: Any): Boolean {

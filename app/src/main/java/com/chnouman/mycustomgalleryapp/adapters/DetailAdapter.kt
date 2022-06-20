@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.imagevideogallery.models.VideoContent
 import com.chnouman.mycustomgalleryapp.R
+import com.chnouman.mycustomgalleryapp.databinding.DetailItemBinding
 import com.chnouman.mycustomgalleryapp.utils.gone
 import com.chnouman.mycustomgalleryapp.utils.visible
 
@@ -23,9 +23,11 @@ class DetailAdapter(
     private val onVideoItemLongClicked: (position: Int) -> Unit
 ) : RecyclerView.Adapter<DetailAdapter.VideoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val inflater = LayoutInflater.from(videoActivity)
-        val itemView = inflater.inflate(R.layout.detail_item, null, false)
-        return VideoViewHolder(itemView)
+        val binding: DetailItemBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.detail_item, parent, false
+        )
+        return VideoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
@@ -36,33 +38,31 @@ class DetailAdapter(
         return videoList.size
     }
 
-    inner class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class VideoViewHolder(private val binding: DetailItemBinding) :
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener, OnLongClickListener {
-        //define views
-        var preview: ImageView
-        var play: ImageButton
 
         fun bind() {
-            val video = videoList[adapterPosition]
-
-            val path = when (video) {
-                is VideoContent -> {
-                    play.visible()
-                    video.path
+            binding.apply {
+                val path = when (val video = videoList[adapterPosition]) {
+                    is VideoContent -> {
+                        play.visible()
+                        video.path
+                    }
+                    is PictureContent -> {
+                        play.gone()
+                        video.picturePath
+                    }
+                    else -> {
+                        ""
+                    }
                 }
-                is PictureContent -> {
-                    play.gone()
-                    video.picturePath
-                }
-                else -> {
-                    ""
-                }
+                Glide.with(videoActivity)
+                    .load(path)
+                    .apply(RequestOptions().centerCrop())
+                    .into(videoPreview)
+                itemView.setOnClickListener(this@VideoViewHolder)
             }
-            Glide.with(videoActivity)
-                .load(path)
-                .apply(RequestOptions().centerCrop())
-                .into(preview)
-            itemView.setOnClickListener(this)
         }
 
         override fun onClick(view: View) {
@@ -75,11 +75,12 @@ class DetailAdapter(
         }
 
         init {
-            //instantiate views
-            preview = itemView.findViewById(R.id.video_preview)
-            play = itemView.findViewById(R.id.play)
-            preview.setOnLongClickListener(this)
-            play.setOnClickListener(this)
+            binding.apply {
+                videoPreview.setOnLongClickListener(this@VideoViewHolder)
+                videoPreview.setOnClickListener(this@VideoViewHolder)
+                play.setOnClickListener(this@VideoViewHolder)
+                play.setOnLongClickListener(this@VideoViewHolder)
+            }
         }
     }
 }

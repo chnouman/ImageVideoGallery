@@ -11,7 +11,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chnouman.imagevideogallery.ImageVideoGallery.Companion.withPictureContext
 import com.chnouman.imagevideogallery.ImageVideoGallery.Companion.withVideoContext
+import com.chnouman.imagevideogallery.PictureGet
 import com.chnouman.imagevideogallery.VideoGet.Companion.externalContentUri
+import com.chnouman.imagevideogallery.VideoGet.Companion.internalContentUri
 import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.imagevideogallery.models.VideoContent
 import com.chnouman.mycustomgalleryapp.adapters.DetailAdapter
@@ -44,12 +46,12 @@ class DetailFragment : Fragment() {
             val numOfColumns = calculateNoOfColumns(120f)
             binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), numOfColumns)
         }
-
+        allContent.clear()
         when (args.bucketId) {
             -1 -> {//indicates All Images
                 allContent.addAll(
                     withPictureContext(requireContext())
-                        .getAllPictureContents(externalContentUri)
+                        .getAllPictureContents(PictureGet.externalContentUri)
                 )
                 Toast.makeText(requireContext(), allContent.size.toString(), Toast.LENGTH_LONG)
                     .show()
@@ -96,9 +98,7 @@ class DetailFragment : Fragment() {
                     playVideo(position)
                 if (allContent[position] is PictureContent)
                 //show picture information
-
-                //show picture information
-                    displayPictureInFragment(allContent, position)
+                    displayPictureInFragment(allContent as ArrayList<PictureContent>, position)
             }
         ) { position ->
             //show video information
@@ -109,12 +109,12 @@ class DetailFragment : Fragment() {
 
     private fun playVideo(position: Int) {
 
-        /* findNavController().navigate(
-             DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
-                 position,
-                 allVideos!!.toTypedArray()
-             )
-         )*/
+        findNavController().navigate(
+            DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
+                position,
+                (allContent as ArrayList<VideoContent>).toTypedArray()
+            )
+        )
     }
 
     private fun showVideoInfo(video: Any) {
@@ -126,21 +126,15 @@ class DetailFragment : Fragment() {
     }
 
     private fun displayPictureInFragment(
-        pictureList: ArrayList<Any>,
+        pictureList: ArrayList<PictureContent>,
         position: Int
     ) {
-        /*  val picturePage = fragment_picture_display()
-          picturePage.setAllpics(pictureList, position)
-          val transition = TransitionInflater.from(requireContext()).inflateTransition(R.transition.explode)
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-              picturePage.setEnterTransition(Slide(Gravity.TOP))
-              picturePage.setExitTransition(Slide(Gravity.BOTTOM))
-          }
-          getSupportFragmentManager()
-              .beginTransaction()
-              .replace(R.id.motherview, picturePage)
-              .addToBackStack(null)
-              .commit()*/
+        findNavController().navigate(
+            DetailFragmentDirections.actionDetailFragmentToPreviewFragment(
+                position,
+                pictureList.toTypedArray()
+            )
+        )
     }
 
 }

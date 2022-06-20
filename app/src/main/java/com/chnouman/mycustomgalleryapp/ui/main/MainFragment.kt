@@ -34,7 +34,7 @@ class MainFragment : Fragment() {
 
     private fun calculateNoOfColumns(
         columnWidthDp: Float
-    ): Int { // For example columnWidthdp=180
+    ): Int { // For example column Width dp=180
         val displayMetrics = resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
         return (screenWidthDp / columnWidthDp + 0.5).toInt()
@@ -106,12 +106,23 @@ class MainFragment : Fragment() {
                     allFolders.add(PictureFolderContent)
                 }
             }
+            var firstImage = ""
+            var firstVideo = ""
             for (i in allFolders.indices) {
                 var path: String? = ""
-                if (i == 0 || i == 1) {
-                    //set video for All folders
+                if (i == 0 && allFolders[i] is PictureFolderContent) {
+                    //set paths later
+                } else if (i == 0 && allFolders[i] is VideoFolderContent) {
+                    //set path later
+                } else if (i == 0 && allFolders[i] is PictureFolderContent && allFolders[i + 1] is VideoFolderContent) {
+                    //set path later
                 } else {
                     path = getPath(allFolders[i])
+                    if (allFolders[i] is PictureFolderContent && firstImage.isEmpty()) {
+                        firstImage = path ?: ""
+                    } else if (allFolders[i] is VideoFolderContent && firstVideo.isEmpty()) {
+                        firstVideo = path ?: ""
+                    }
                 }
                 folders.add(
                     FolderWithOneVideo(
@@ -120,6 +131,17 @@ class MainFragment : Fragment() {
                         getMediaType(allFolders[i])
                     )
                 )
+            }
+            //set path for all images and all videos here
+            //check if gallery is for all images
+            if (allFolders[0] is PictureFolderContent) {
+                folders[0].videoPath = firstImage
+            }
+            if (allFolders[0] is VideoFolderContent) {
+                folders[0].videoPath = firstVideo
+            }
+            if (allFolders[0] is PictureFolderContent && allFolders[1] is VideoFolderContent) {
+                folders[1].videoPath = firstVideo
             }
         } else if (allPictureFolders.isEmpty() && allVideoFolders.isNotEmpty()) {
             allFolders.addAll(allVideoFolders)
@@ -180,9 +202,9 @@ class MainFragment : Fragment() {
 
     private fun getPath(o: Any) =
         when (o) {
-            is VideoFolderContent -> o.videoFiles[0].path
-            is PictureFolderContent -> o.photos[0].picturePath
-            is VideoPictureFolderContent -> o.photos?.get(0)?.picturePath ?: ""
+            is VideoFolderContent -> o.videoFiles[0].videoUri
+            is PictureFolderContent -> o.photos[0].photoUri
+            is VideoPictureFolderContent -> o.photos?.get(0)?.photoUri ?: ""
             else -> ""
         }
 }

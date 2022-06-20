@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,8 +14,7 @@ import com.chnouman.mycustomgalleryapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private var continueAfterPermission = 0
-    private val MY_PERMISSIONS_REQUEST_STORAGE_PERMISSIONS = 10
-    private var TAG = "MainActivity"
+    private val myPermissionRequestStoragePermissions = 10
     private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,19 +41,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestStoragePermission() {
         val permissions = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
         ActivityCompat.requestPermissions(
             this,
             permissions,
-            MY_PERMISSIONS_REQUEST_STORAGE_PERMISSIONS
+            myPermissionRequestStoragePermissions
         )
     }
 
     private fun isStoragePermissionGranted(): Boolean {
-        var granted = false
-        granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
         } else {
             true
@@ -69,17 +65,17 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode != MY_PERMISSIONS_REQUEST_STORAGE_PERMISSIONS) {
+        if (requestCode != myPermissionRequestStoragePermissions) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             return
         }
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Storage permission granted")
+            //Log.d(TAG, "Storage permission granted")
             continueAfterPermissionGrant()
         } else {
             Toast.makeText(
                 this,
-                "You must Grants Storage Permission to continue",
+                "You must Grant Storage Permission to continue",
                 Toast.LENGTH_LONG
             ).show()
         }

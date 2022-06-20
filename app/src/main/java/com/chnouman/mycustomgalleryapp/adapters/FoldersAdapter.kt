@@ -2,6 +2,7 @@ package com.chnouman.mycustomgalleryapp.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -48,7 +49,7 @@ class FoldersAdapter(
                         play.gone()
                     }
                     Glide.with(videoActivity)
-                        .load(videoPath)
+                        .load(Uri.parse(videoPath))
                         .apply(RequestOptions().centerCrop())
                         .into(videoPreview)
                     binding.folderName.text = folderName
