@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ImageVideoGallery</string>
+    <string name="all_images">All Images</string>
+    <string name="all_videos">All Videos</string>
 </resources>

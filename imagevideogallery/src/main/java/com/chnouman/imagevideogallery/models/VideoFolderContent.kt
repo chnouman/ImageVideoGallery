@@ -1,19 +1,11 @@
 package com.chnouman.imagevideogallery.models
 
+import androidx.annotation.StringRes
 
-class VideoFolderContent {
-    var videoFiles: ArrayList<VideoContent>
-    var folderName: String? = null
-    var folderPath: String? = null
-    var bucketId = 0
 
-    constructor() {
-        videoFiles = ArrayList()
-    }
+class VideoFolderContent(folderPath: String? = null, folderName: String? = null) :
+    FolderContent(folderPath, folderName) {
+    var videoFiles = mutableListOf<VideoContent>()
 
-    constructor(folderPath: String?, folderName: String?) {
-        this.folderName = folderName
-        this.folderPath = folderPath
-        videoFiles = ArrayList()
-    }
+    constructor(folderNameStringId: Int) : this("", "")
 }

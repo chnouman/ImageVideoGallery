@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.chnouman.imagevideogallery.models.FolderWithOneVideo
+import com.chnouman.imagevideogallery.models.FolderWithOneImage
 import com.chnouman.imagevideogallery.models.MediaTypes
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.FolderItemBinding
@@ -19,7 +19,7 @@ import com.chnouman.mycustomgalleryapp.utils.visible
 
 class FoldersAdapter(
     private val videoActivity: Context,
-    private val videoList: ArrayList<FolderWithOneVideo>,
+    private val videoList: MutableList<FolderWithOneImage>,
     private val onVideoItemClicked: (position: Int) -> Unit,
     private val onVideoItemLongClicked: (position: Int) -> Unit
 ) : RecyclerView.Adapter<FoldersAdapter.VideoViewHolder>() {
@@ -49,10 +49,16 @@ class FoldersAdapter(
                         play.gone()
                     }
                     Glide.with(videoActivity)
-                        .load(Uri.parse(videoPath))
+                        .load(Uri.parse(imageUri))
                         .apply(RequestOptions().centerCrop())
                         .into(videoPreview)
-                    binding.folderName.text = folderName
+                    binding.folderName.text = if (folderName.isNullOrBlank()) {
+                        this.folderNameStringId?.let {
+                            binding.folderName.context.getString(it)
+                        }
+                    } else {
+                        folderName
+                    }
                     binding.totalImagesTV.text = total.toString()
                 }
                 itemView.setOnClickListener { onVideoItemClicked.invoke(adapterPosition) }

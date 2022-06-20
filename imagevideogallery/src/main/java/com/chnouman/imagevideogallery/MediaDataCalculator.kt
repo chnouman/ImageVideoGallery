@@ -5,7 +5,7 @@ import java.text.DecimalFormat
 object MediaDataCalculator {
     fun convertDuration(duration: Long): String? {
         var out: String? = null
-        var hours: Long = 0
+        var hours: Long
         hours = try {
             duration / 3600000
         } catch (e: Exception) {

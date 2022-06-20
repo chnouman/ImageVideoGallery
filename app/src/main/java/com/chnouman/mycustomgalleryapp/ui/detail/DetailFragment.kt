@@ -46,6 +46,7 @@ class DetailFragment : Fragment() {
             val numOfColumns = calculateNoOfColumns(120f)
             binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), numOfColumns)
         }
+
         allContent.clear()
         when (args.bucketId) {
             -1 -> {//indicates All Images
@@ -76,7 +77,7 @@ class DetailFragment : Fragment() {
                 //TODO above two statements are not correct
                 Toast.makeText(requireContext(), allContent.size.toString(), Toast.LENGTH_LONG)
                     .show()
-                setupUpAndDisplayVideos()
+
             }
         }
     }
