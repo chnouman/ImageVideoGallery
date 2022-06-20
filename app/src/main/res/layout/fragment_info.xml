@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@android:color/transparent"
@@ -25,11 +24,11 @@
                     android:id="@+id/pic"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
-                    android:background="@android:color/holo_purple"
+                    android:contentDescription="@string/picture"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_fast_forward" />
+                    app:srcCompat="@drawable/ic_launcher" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout"
@@ -59,7 +58,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="TextView" />
+                        tools:text="TextView" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -89,7 +88,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="TextView" />
+                        tools:text="TextView" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -120,7 +119,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="TextView" />
+                        tools:text="TextView" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -140,16 +139,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Composer"
                         android:textColor="@android:color/holo_purple"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Composer" />
 
                     <TextView
                         android:id="@+id/composer"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="TextView" />
+                        tools:text="TextView" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -170,23 +169,18 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Genre"
                         android:textColor="@android:color/holo_purple"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="Genre" />
 
                     <TextView
                         android:id="@+id/genre"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="TextView" />
+                        tools:text="TextView" />
                 </LinearLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
-
-
     </RelativeLayout>
 </layout>

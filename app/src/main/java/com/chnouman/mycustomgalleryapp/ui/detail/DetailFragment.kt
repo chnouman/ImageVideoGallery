@@ -4,25 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.chnouman.imagevideogallery.ImageVideoGallery.Companion.withPictureContext
-import com.chnouman.imagevideogallery.ImageVideoGallery.Companion.withVideoContext
-import com.chnouman.imagevideogallery.PictureGet
-import com.chnouman.imagevideogallery.VideoGet.Companion.externalContentUri
-import com.chnouman.imagevideogallery.VideoGet.Companion.internalContentUri
 import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.imagevideogallery.models.VideoContent
-import com.chnouman.mycustomgalleryapp.adapters.DetailAdapter
 import com.chnouman.mycustomgalleryapp.databinding.ActivityDetailBinding
+import com.chnouman.mycustomgalleryapp.backend.viewmodels.DetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
-    private var allContent: ArrayList<Any> = ArrayList()
+
     private lateinit var binding: ActivityDetailBinding
     private val args: DetailFragmentArgs by navArgs()
+    private val viewModel: DetailViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,42 +41,17 @@ class DetailFragment : Fragment() {
             setItemViewCacheSize(20)
             isDrawingCacheEnabled = true
 
-            val numOfColumns = calculateNoOfColumns(120f)
-            binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), numOfColumns)
+//            val numOfColumns = calculateNoOfColumns(240f)
+            binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
         }
 
-        allContent.clear()
-        when (args.bucketId) {
-            -1 -> {//indicates All Images
-                allContent.addAll(
-                    withPictureContext(requireContext())
-                        .getAllPictureContents(PictureGet.externalContentUri)
-                )
-                Toast.makeText(requireContext(), allContent.size.toString(), Toast.LENGTH_LONG)
-                    .show()
-                setupUpAndDisplayVideos()
-            }
-            -2 -> {//indicates All Videos
-                allContent.addAll(
-                    withVideoContext(requireContext())
-                        .getAllVideoContent(externalContentUri)
-                )
-                Toast.makeText(requireContext(), allContent.size.toString(), Toast.LENGTH_LONG)
-                    .show()
-                setupUpAndDisplayVideos()
-            }
-            else -> {
-                val allVideoContentByBucketId = withVideoContext(requireContext())
-                    .getAllVideoContentByBucketId(args.bucketId)
-                val allPictureContentByBucketId = withPictureContext(requireContext())
-                    .getAllPictureContentByBucketId(args.bucketId)
-                allContent.addAll(allVideoContentByBucketId)
-                allContent.addAll(allPictureContentByBucketId)
-                //TODO above two statements are not correct
-                Toast.makeText(requireContext(), allContent.size.toString(), Toast.LENGTH_LONG)
-                    .show()
+        viewModel.getContent(args.bucketId)
+        setupObserver()
+    }
 
-            }
+    private fun setupObserver() {
+        viewModel.bucketContent.observe(viewLifecycleOwner) { bucketContent ->
+            setupUpAndDisplayVideos(bucketContent)
         }
     }
 
@@ -90,44 +63,50 @@ class DetailFragment : Fragment() {
         return (screenWidthDp / columnWidthDp + 0.5).toInt()
     }
 
-    private fun setupUpAndDisplayVideos() {
+    private fun setupUpAndDisplayVideos(bucketContent: MutableList<Any>) {
 
-        val videoAdapter = DetailAdapter(requireActivity(), allContent,
+        val videoAdapter = DetailAdapter( bucketContent,
             { position ->
                 //play video
-                if (allContent[position] is VideoContent)
-                    playVideo(position)
-                if (allContent[position] is PictureContent)
+                if (bucketContent[position] is VideoContent)
+                    playVideo(position, bucketContent)
+                if (bucketContent[position] is PictureContent)
                 //show picture information
-                    displayPictureInFragment(allContent as ArrayList<PictureContent>, position)
+                    displayPictureInFragment(bucketContent as MutableList<PictureContent>, position)
             }
         ) { position ->
             //show video information
-            showVideoInfo(allContent[position])
+            showVideoInfo(bucketContent[position])
         }
         binding.videoRecycler.adapter = videoAdapter
     }
 
-    private fun playVideo(position: Int) {
+    private fun playVideo(position: Int, bucketContent: MutableList<Any>) {
 
         findNavController().navigate(
             DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
                 position,
-                (allContent as ArrayList<VideoContent>).toTypedArray()
+                (bucketContent as MutableList<VideoContent>).toTypedArray()
             )
         )
     }
 
-    private fun showVideoInfo(video: Any) {
-        findNavController().navigate(
-            DetailFragmentDirections.actionDetailFragmentToVideoInfoFragment(
-                video as VideoContent
+    private fun showVideoInfo(content: Any) {
+        if (content is VideoContent) {
+            findNavController().navigate(
+                DetailFragmentDirections.actionDetailFragmentToVideoInfoFragment(
+                    content
+                )
+            )
+        } else findNavController().navigate(
+            DetailFragmentDirections.actionDetailFragmentToPictureInfoFragment(
+                content as PictureContent
             )
         )
     }
 
     private fun displayPictureInFragment(
-        pictureList: ArrayList<PictureContent>,
+        pictureList: MutableList<PictureContent>,
         position: Int
     ) {
         findNavController().navigate(
@@ -137,5 +116,4 @@ class DetailFragment : Fragment() {
             )
         )
     }
-
 }

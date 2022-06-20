@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp
+package com.chnouman.mycustomgalleryapp.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
+import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             Toast.makeText(
                 this,
-                "You must Grant Storage Permission to continue",
+                getString(R.string.permission_text),
                 Toast.LENGTH_LONG
             ).show()
         }

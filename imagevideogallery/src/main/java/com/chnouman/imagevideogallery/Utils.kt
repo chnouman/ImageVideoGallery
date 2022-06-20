@@ -58,7 +58,7 @@ object Utils {
         when (o) {
             is VideoFolderContent -> o.videoFiles.size
             is PictureFolderContent -> o.photos.size
-            is VideoPictureFolderContent -> (o.videoFiles?.size ?: 0) + (o.photos?.size ?: 0)
+            is VideoPictureFolderContent -> (o.videoFiles.size) + (o.photos.size)
             else -> 0
         }
 
@@ -66,7 +66,7 @@ object Utils {
         when (o) {
             is VideoFolderContent -> o.videoFiles[0].videoUri
             is PictureFolderContent -> o.photos[0].photoUri
-            is VideoPictureFolderContent -> o.photos?.get(0)?.photoUri ?: ""
+            is VideoPictureFolderContent -> o.photos[0].photoUri ?: ""
             else -> ""
         }
 }

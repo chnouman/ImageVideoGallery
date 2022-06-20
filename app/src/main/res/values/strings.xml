@@ -7,4 +7,16 @@
     <string name="size">Size</string>
     <string name="all_images">All Images</string>
     <string name="all_videos">All Videos</string>
+    <string name="main_title">ImageView Gallery</string>
+    <string name="dummy_stats">Pictures: %d Videos: %d</string>
+    <string name="imagepreview">ImagePreview</string>
+    <string name="playicon">PlayIcon</string>
+    <string name="previewicon">PreviewIcon</string>
+    <string name="playicon_ig">PlayIcon</string>
+    <string name="next">Next</string>
+    <string name="rewind">Rewind</string>
+    <string name="forward">Forward</string>
+    <string name="switch_img">Switch</string>
+    <string name="picture">Picture</string>
+    <string name="permission_text">You must Grant Storage Permission to continue</string>
 </resources>

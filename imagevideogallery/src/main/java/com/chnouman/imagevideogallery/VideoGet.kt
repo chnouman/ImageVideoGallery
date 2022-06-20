@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import com.chnouman.imagevideogallery.models.VideoContent
 import com.chnouman.imagevideogallery.models.VideoFolderContent
@@ -186,7 +187,7 @@ class VideoGet private constructor(context: Context) {
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var videoGet: VideoGet? = null
-        val externalContentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val externalContentUri: Uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         val internalContentUri = MediaStore.Video.Media.INTERNAL_CONTENT_URI
         private var cursor: Cursor? = null
         fun getInstance(contx: Context): VideoGet {

@@ -1,13 +1,11 @@
 package com.chnouman.mycustomgalleryapp.di
 
 import android.app.Application
-import android.content.Context
 import com.chnouman.imagevideogallery.ImageVideoGallery
 import com.chnouman.imagevideogallery.PictureGet
 import com.chnouman.imagevideogallery.VideoGet
-import com.chnouman.mycustomgalleryapp.App
-import com.chnouman.mycustomgalleryapp.repository.GalleryRepositoryImpl
-import com.chnouman.mycustomgalleryapp.repository.GalleryRepository
+import com.chnouman.mycustomgalleryapp.backend.repository.GalleryRepositoryImpl
+import com.chnouman.mycustomgalleryapp.backend.repository.GalleryRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

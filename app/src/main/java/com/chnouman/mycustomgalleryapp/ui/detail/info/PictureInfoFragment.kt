@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.ui.info
+package com.chnouman.mycustomgalleryapp.ui.detail.info
 
 
 import android.os.Bundle
@@ -39,7 +39,7 @@ class PictureInfoFragment : DialogFragment() {
                 Glide.with(activity!!)
                     .load(picturePath)
                     .apply(
-                        RequestOptions().placeholder(R.drawable.ic_launcher_background).centerCrop()
+                        RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
                     )
                     .into(pic)
             }

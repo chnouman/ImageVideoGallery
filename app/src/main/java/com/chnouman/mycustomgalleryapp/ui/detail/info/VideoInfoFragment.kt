@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.ui.info
+package com.chnouman.mycustomgalleryapp.ui.detail.info
 
 import android.net.Uri
 import android.os.Bundle
@@ -32,7 +32,7 @@ class VideoInfoFragment : DialogFragment() {
             Glide.with(requireActivity())
                 .load(Uri.parse(args.videoContent.videoUri))
                 .apply(
-                    RequestOptions().placeholder(R.drawable.ic_launcher_foreground).centerCrop()
+                    RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
                 )
                 .into(pic)
         }

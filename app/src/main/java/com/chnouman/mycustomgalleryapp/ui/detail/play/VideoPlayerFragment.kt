@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.ui.play
+package com.chnouman.mycustomgalleryapp.ui.detail.play
 
 import android.annotation.SuppressLint
 import android.net.Uri

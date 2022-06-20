@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -46,6 +44,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/previewicon"
                     app:layout_constraintBottom_toTopOf="@+id/seeker"
                     app:layout_constraintEnd_toStartOf="@+id/rewind"
                     app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +59,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/playicon"
                     app:layout_constraintBottom_toTopOf="@+id/seeker"
                     app:layout_constraintEnd_toStartOf="@+id/forward"
                     app:layout_constraintStart_toEndOf="@+id/rewind"
@@ -76,6 +76,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/next"
                     app:layout_constraintBottom_toTopOf="@+id/seeker"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/forward"
@@ -97,8 +98,7 @@
                     android:thumbTint="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/play"
-                    tools:targetApi="lollipop" />
+                    app:layout_constraintTop_toBottomOf="@+id/play" />
 
                 <TextView
                     android:id="@+id/progress"
@@ -139,6 +139,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/rewind"
                     app:layout_constraintBottom_toTopOf="@+id/seeker"
                     app:layout_constraintEnd_toStartOf="@+id/play"
                     app:layout_constraintStart_toEndOf="@+id/previous"
@@ -155,6 +156,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/forward"
                     app:layout_constraintBottom_toTopOf="@+id/seeker"
                     app:layout_constraintEnd_toStartOf="@+id/next"
                     app:layout_constraintStart_toEndOf="@+id/play"
@@ -162,10 +164,6 @@
                     app:srcCompat="@drawable/ic_fast_forward"
                     app:tint="@android:color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
         </androidx.cardview.widget.CardView>
-
-
     </FrameLayout>
 </layout>
