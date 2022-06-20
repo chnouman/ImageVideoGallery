@@ -124,10 +124,19 @@ class MainFragment : Fragment() {
                         firstVideo = path ?: ""
                     }
                 }
+                val folderName = getFolderName(allFolders[i])
+                //get count
+                val totalCount = if (folderName == getString(R.string.all_images)) {
+                    getTotalImagesCount(allPictureFolders)
+                } else if (folderName == getString(R.string.all_videos)) {
+                    getTotalVideosCount(allVideoFolders)
+                } else {
+                    getTotal(allFolders[i])
+                }
                 folders.add(
                     FolderWithOneVideo(
                         path ?: "",
-                        getFolderName(allFolders[i]) ?: "",
+                        folderName ?: "", totalCount,
                         getMediaType(allFolders[i])
                     )
                 )
@@ -172,6 +181,22 @@ class MainFragment : Fragment() {
         binding.videoFolderSelector.adapter = selectorAdapter
     }
 
+    private fun getTotalImagesCount(allPictureFolders: java.util.ArrayList<PictureFolderContent>): Int {
+        var total = 0
+        for (folder in allPictureFolders) {
+            total += folder.photos.size
+        }
+        return total
+    }
+
+    private fun getTotalVideosCount(allVideoFolderContent: java.util.ArrayList<VideoFolderContent>): Int {
+        var total = 0
+        for (folder in allVideoFolderContent) {
+            total += folder.videoFiles.size
+        }
+        return total
+    }
+
     private fun getMediaType(o: Any?) =
         when (o) {
             is VideoFolderContent -> {
@@ -198,6 +223,14 @@ class MainFragment : Fragment() {
             is PictureFolderContent -> o.folderName
             is VideoPictureFolderContent -> o.folderName
             else -> ""
+        }
+
+    private fun getTotal(o: Any) =
+        when (o) {
+            is VideoFolderContent -> o.videoFiles.size
+            is PictureFolderContent -> o.photos.size
+            is VideoPictureFolderContent -> (o.videoFiles?.size ?: 0) + (o.photos?.size ?: 0)
+            else -> 0
         }
 
     private fun getPath(o: Any) =

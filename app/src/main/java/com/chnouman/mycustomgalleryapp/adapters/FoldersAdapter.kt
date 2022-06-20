@@ -53,6 +53,7 @@ class FoldersAdapter(
                         .apply(RequestOptions().centerCrop())
                         .into(videoPreview)
                     binding.folderName.text = folderName
+                    binding.totalImagesTV.text = total.toString()
                 }
                 itemView.setOnClickListener { onVideoItemClicked.invoke(adapterPosition) }
             }
