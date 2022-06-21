@@ -4,11 +4,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.imagevideogallery.models.VideoContent
-import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.DetailItemBinding
 import com.chnouman.mycustomgalleryapp.utils.gone
 import com.chnouman.mycustomgalleryapp.utils.picture
@@ -20,9 +18,8 @@ class DetailAdapter(
     private val onVideoItemLongClicked: (position: Int) -> Unit
 ) : RecyclerView.Adapter<DetailAdapter.VideoViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
-        val binding: DetailItemBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.detail_item, parent, false
+        val binding: DetailItemBinding = DetailItemBinding.inflate(
+            LayoutInflater.from(parent.context),parent,false
         )
         return VideoViewHolder(binding)
     }
@@ -43,11 +40,11 @@ class DetailAdapter(
             binding.apply {
                 val path = when (val video = videoList[adapterPosition]) {
                     is VideoContent -> {
-                        play.visible()
+                        playIB.visible()
                         video.videoUri
                     }
                     is PictureContent -> {
-                        play.gone()
+                        playIB.gone()
                         video.photoUri
                     }
                     else -> {
@@ -55,7 +52,7 @@ class DetailAdapter(
                     }
                 }
                 path?.let {
-                    videoPreview.picture(it)
+                    videoPreviewIV.picture(it)
                 }
                 itemView.setOnClickListener(this@VideoViewHolder)
             }
@@ -72,11 +69,11 @@ class DetailAdapter(
 
         init {
             binding.apply {
-                videoPreview.apply {
+                videoPreviewIV.apply {
                     setOnLongClickListener(this@VideoViewHolder)
-                    videoPreview.setOnClickListener(this@VideoViewHolder)
+                    setOnClickListener(this@VideoViewHolder)
                 }
-                play.apply {
+                playIB.apply {
                     setOnClickListener(this@VideoViewHolder)
                     setOnLongClickListener(this@VideoViewHolder)
                 }

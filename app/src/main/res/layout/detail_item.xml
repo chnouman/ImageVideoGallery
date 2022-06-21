@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:layout_margin="8dp"
+    android:background="?attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/corner_radius"
+    app:cardElevation="@dimen/card_elevation">
 
-    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ImageView
+        android:id="@+id/videoPreviewIV"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:layout_margin="8dp"
+        android:contentDescription="@string/imagepreview"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <ImageButton
+        android:id="@+id/playIB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:background="?attr/selectableItemBackground"
-        app:cardCornerRadius="@dimen/corner_radius"
-        app:cardElevation="@dimen/card_elevation">
-
-        <ImageView
-            android:id="@+id/video_preview"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
-            android:contentDescription="@string/imagepreview" />
-
-        <ImageButton
-            android:id="@+id/play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:contentDescription="@string/playicon"
-            android:focusable="true"
-            android:src="@drawable/ic_play"
-            app:tint="@color/design_default_color_background"
-            tools:ignore="UnusedAttribute" />
+        android:clickable="true"
+        android:contentDescription="@string/playicon"
+        android:focusable="true"
+        android:src="@drawable/ic_play"
+        app:tint="@color/design_default_color_background"
+        tools:ignore="UnusedAttribute" />
 
 
-    </androidx.cardview.widget.CardView>
-</layout>
+</androidx.cardview.widget.CardView>

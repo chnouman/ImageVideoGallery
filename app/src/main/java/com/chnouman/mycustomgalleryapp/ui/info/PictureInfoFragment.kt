@@ -1,6 +1,6 @@
-package com.chnouman.mycustomgalleryapp.ui.detail.info
+package com.chnouman.mycustomgalleryapp.ui.info
 
-import android.net.Uri
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +14,9 @@ import com.chnouman.imagevideogallery.MediaDataCalculator.convertBytes
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.FragmentInfoBinding
 
-class VideoInfoFragment : DialogFragment() {
-    private val args: VideoInfoFragmentArgs by navArgs()
+class PictureInfoFragment : DialogFragment() {
     private lateinit var binding: FragmentInfoBinding
+    private val args: PictureInfoFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,17 +25,24 @@ class VideoInfoFragment : DialogFragment() {
         dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentInfoBinding.inflate(
             inflater, container, false
-        ).apply {
-            filename.text = args.videoContent.videoName
-            fullpath.text = args.videoContent.path
-            size.text = convertBytes(args.videoContent.videoSize)
-            Glide.with(requireActivity())
-                .load(Uri.parse(args.videoContent.videoUri))
-                .apply(
-                    RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
-                )
-                .into(pic)
-        }
+        )
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.apply {
+            args.picture.apply {
+                fileNameTV.text = pictureName
+                fullPathTV.text = picturePath
+                sizeTV.text = convertBytes(pictureSize!!)
+                Glide.with(activity!!)
+                    .load(picturePath)
+                    .apply(
+                        RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
+                    )
+                    .into(picIV)
+            }
+        }
     }
 }

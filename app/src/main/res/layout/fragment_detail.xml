@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_on_secondary">
+    tools:context=".ui.MainActivity">
 
     <ImageView
         android:id="@+id/backIconIV"
@@ -16,8 +16,7 @@
         android:contentDescription="@string/switch_img"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleTV"
@@ -26,33 +25,26 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:textAlignment="center"
-        android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/folder_name" />
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/picturesVP"
-        android:layout_width="match_parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/videoRV"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/counterTV"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/backIconIV" />
-
-    <TextView
-        android:id="@+id/counterTV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="16sp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="2/340" />
+        app:layout_constraintTop_toBottomOf="@id/backIconIV"
+        app:spanCount="2"
+        tools:itemCount="5"
+        tools:listitem="@layout/detail_item"
+        tools:src="@tools:sample/avatars" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

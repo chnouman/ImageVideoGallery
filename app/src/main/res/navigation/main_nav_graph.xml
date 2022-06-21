@@ -23,7 +23,7 @@
         android:id="@+id/detailFragment"
         android:name="com.chnouman.mycustomgalleryapp.ui.detail.DetailFragment"
         android:label="DetailFragment"
-        tools:layout="@layout/activity_detail">
+        tools:layout="@layout/fragment_detail">
         <action
             android:id="@+id/action_detailFragment_to_videoInfoFragment"
             app:destination="@id/videoInfoFragment" />
@@ -45,7 +45,7 @@
     </fragment>
     <dialog
         android:id="@+id/videoInfoFragment"
-        android:name="com.chnouman.mycustomgalleryapp.ui.detail.info.VideoInfoFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.info.VideoInfoFragment"
         android:label="VideoInfoFragment"
         tools:layout="@layout/fragment_info">
         <argument
@@ -54,7 +54,7 @@
     </dialog>
     <fragment
         android:id="@+id/videoPlayerFragment"
-        android:name="com.chnouman.mycustomgalleryapp.ui.detail.play.VideoPlayerFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.play.VideoPlayerFragment"
         android:label="VideoPlayerFragment"
         tools:layout="@layout/fragment_video_player">
         <argument
@@ -66,7 +66,7 @@
     </fragment>
     <dialog
         android:id="@+id/pictureInfoFragment"
-        android:name="com.chnouman.mycustomgalleryapp.ui.detail.info.PictureInfoFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.info.PictureInfoFragment"
         android:label="PictureInfoFragment"
         tools:layout="@layout/fragment_info">
         <argument
@@ -75,7 +75,7 @@
     </dialog>
     <fragment
         android:id="@+id/previewFragment"
-        android:name="com.chnouman.mycustomgalleryapp.ui.detail.preview.PreviewFragment"
+        android:name="com.chnouman.mycustomgalleryapp.ui.preview.PreviewFragment"
         android:label="PreviewFragment"
         tools:layout="@layout/fragment_preview">
         <argument

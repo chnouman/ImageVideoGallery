@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.backend.viewmodels
+package com.chnouman.mycustomgalleryapp.viewmodels.detail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chnouman.imagevideogallery.PictureGet
 import com.chnouman.imagevideogallery.VideoGet
-import com.chnouman.mycustomgalleryapp.backend.repository.GalleryRepository
+import com.chnouman.mycustomgalleryapp.data.repository.GalleryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,8 +41,8 @@ class DetailViewModel @Inject constructor(private val galleryRepository: Gallery
                         galleryRepository.getAllVideoContentByBucketId(bucketId)
                     val allPictureContentByBucketId = galleryRepository
                         .getAllPictureContentByBucketId(bucketId)
-                    allContent.addAll(allVideoContentByBucketId)
                     allContent.addAll(allPictureContentByBucketId)
+                    allContent.addAll(allVideoContentByBucketId)
                     //TODO above two statements are not correct
                 }
             }

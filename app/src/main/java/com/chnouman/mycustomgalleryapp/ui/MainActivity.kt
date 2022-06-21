@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.ActivityMainBinding
@@ -21,9 +20,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =
-            DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-
+            ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (isStoragePermissionGranted()) {
             setupNavGraph()
         } else {
@@ -35,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupNavGraph() {
         //Setup the navGraph for this activity
         val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            .findFragmentById(R.id.navHostFragment) as NavHostFragment
         val inflater = navHostFragment.navController.navInflater
         val graph = inflater.inflate(R.navigation.main_nav_graph)
         navHostFragment.navController.graph = graph
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestStoragePermission() {
         val permissions = arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE
         )
         ActivityCompat.requestPermissions(
             this,

@@ -1,11 +1,10 @@
-package com.chnouman.mycustomgalleryapp.ui.detail.preview
+package com.chnouman.mycustomgalleryapp.ui.preview
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -33,13 +32,13 @@ class PreviewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            backIcon.setOnClickListener { findNavController().popBackStack() }
-            picturePager.apply {
+            backIconIV.setOnClickListener { findNavController().popBackStack() }
+            picturesVP.apply {
                 offscreenPageLimit = 3
                 val adapter = PicturePagerAdapter()
                 this.adapter = adapter
                 setCurrentItem(args.position, true)
-                binding.counterTextView.text =
+                binding.counterTV.text =
                     "${ args.position+1}/" + args.pictures.size
                 this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                     override fun onPageScrolled(
@@ -50,7 +49,7 @@ class PreviewFragment : Fragment() {
                     }
 
                     override fun onPageSelected(position: Int) {
-                        binding.counterTextView.text =
+                        binding.counterTV.text =
                             "${ position+1}/" + args.pictures.size
                     }
 
@@ -65,16 +64,15 @@ class PreviewFragment : Fragment() {
         @NonNull
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             val binding: PicturePagerItemBinding =
-                DataBindingUtil.inflate<PicturePagerItemBinding?>(
+                PicturePagerItemBinding.inflate(
                     LayoutInflater.from(container.context),
-                    R.layout.picture_pager_item, null, false
                 ).apply {
                     args.pictures[position].photoUri?.let {
-                        pictureZone.pictureFit(it)
+                        pictureIV.pictureFit(it)
                     }
-                    (container as ViewPager).addView(pictureZone)
+                    (container as ViewPager).addView(pictureIV)
                 }
-            return binding.pictureZone
+            return binding.pictureIV
         }
 
         override fun getCount(): Int {

@@ -1,6 +1,5 @@
-package com.chnouman.mycustomgalleryapp.backend.viewmodels
+package com.chnouman.mycustomgalleryapp.viewmodels.main
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,13 +8,15 @@ import com.chnouman.imagevideogallery.Utils
 import com.chnouman.imagevideogallery.VideoGet
 import com.chnouman.imagevideogallery.models.*
 import com.chnouman.mycustomgalleryapp.R
-import com.chnouman.mycustomgalleryapp.backend.repository.GalleryRepository
+import com.chnouman.mycustomgalleryapp.data.repository.GalleryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val galleryRepository: GalleryRepository) :
+class MainViewModel @Inject constructor(
+    private val galleryRepository: GalleryRepository
+) :
     ViewModel() {
 
     private val _foldersData = MutableLiveData<MutableList<FolderWithOneImage>>()
@@ -26,12 +27,11 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
     val totalImages: LiveData<Pair<Int, Int>>
         get() = _totalImages
 
-/*    private val _totalVideos = MutableLiveData<Int>()
-    val totalVideos: LiveData<Int>
-        get() = _totalVideos*/
+    private val _viewMode = MutableLiveData< Int>()
+    val viewMode: LiveData<Int>
+        get() = _viewMode
 
     fun getFolders() {
-        Log.d("TEST", "getFoldersCall: ")
         viewModelScope.launch {
             val allVideoFolders: MutableList<VideoFolderContent> = galleryRepository
                 .getAllVideoFolders(VideoGet.externalContentUri)
@@ -63,8 +63,6 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
                 }
                 _totalImages.value = Pair(totalImagesCount, totalVideosCount)
             }
-
-
             if (allVideoFolders.isNotEmpty() || allPictureFolders.isNotEmpty()) {
 
                 combinePicturesAndVideos(
@@ -83,7 +81,6 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
             } else if (allPictureFolders.isNotEmpty() && allVideoFolders.isEmpty()) {
                 //set image for first folder also
                 allFoldersWithOneImage.addAll(allPictureFolders.map {
-                    Log.d("TEST", "getFolders: ${it.photos.size} ${it.folderName}")
                     FolderWithOneImage(
                         it.photos[0].photoUri, it.folderName, it.photos.size,
                         MediaTypes.PICTURE, bucketId = it.bucketId
@@ -164,14 +161,10 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
                     }
                 }
                 else -> {
-                    Log.d(
-                        "TEST",
-                        "combinePicturesAndVideos: total  = ${Utils.getTotal(folders[i])} ${folders[i]}"
-                    )
+
                     Utils.getTotal(folders[i])
                 }
             }
-            Log.d("TEST", "getFoldersBucket: $folderName ${Utils.getBucketId(folders[i])}")
             resultFolder.add(
                 FolderWithOneImage(
                     path ?: "",
@@ -204,6 +197,17 @@ class MainViewModel @Inject constructor(private val galleryRepository: GalleryRe
         }
         if ((firstFolder.folderNameStringId == R.string.all_images) && allFoldersWithOneImage[1].folderNameStringId == R.string.all_videos) {
             allFoldersWithOneImage[1].imageUri = firstVideo
+        }
+    }
+
+    fun getListViewMode() {
+        viewModelScope.launch {
+            _viewMode.value = galleryRepository.getUserViewModePrefs()
+        }
+    }
+    fun setListViewMode(viewMode:Int) {
+        viewModelScope.launch {
+             galleryRepository.saveUserViewModePrefs(viewMode)
         }
     }
 }

@@ -9,16 +9,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.chnouman.imagevideogallery.Utils
 import com.chnouman.imagevideogallery.models.PictureContent
 import com.chnouman.imagevideogallery.models.VideoContent
-import com.chnouman.mycustomgalleryapp.databinding.ActivityDetailBinding
-import com.chnouman.mycustomgalleryapp.backend.viewmodels.DetailViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import com.chnouman.mycustomgalleryapp.databinding.FragmentDetailBinding
+import com.chnouman.mycustomgalleryapp.viewmodels.detail.DetailViewModel
+ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
 
-    private lateinit var binding: ActivityDetailBinding
+    private lateinit var binding: FragmentDetailBinding
     private val args: DetailFragmentArgs by navArgs()
     private val viewModel: DetailViewModel by viewModels()
 
@@ -32,17 +33,17 @@ class DetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ActivityDetailBinding.inflate(inflater, container, false)
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            titleTextView.text = args.folderName
-            backIcon.setOnClickListener { findNavController().popBackStack() }
+            titleTV.text = args.folderName
+            backIconIV.setOnClickListener { findNavController().popBackStack() }
         }
-        binding.videoRecycler.apply {
+        binding.videoRV.apply {
             drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
             hasFixedSize()
             setHasFixedSize(true)
@@ -50,7 +51,7 @@ class DetailFragment : Fragment() {
             isDrawingCacheEnabled = true
 
 //            val numOfColumns = calculateNoOfColumns(240f)
-            binding.videoRecycler.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.videoRV.layoutManager = GridLayoutManager(requireContext(), 2)
         }
         viewModel.getContent(args.bucketId)
     }
@@ -84,12 +85,12 @@ class DetailFragment : Fragment() {
             //show video information
             showVideoInfo(bucketContent[position])
         }
-        binding.videoRecycler.adapter = videoAdapter
+        binding.videoRV.adapter = videoAdapter
     }
 
     private fun playVideo(position: Int, bucketContent: MutableList<Any>) {
         val videos = mutableListOf<VideoContent>()
-        if (args.bucketId != -2) {
+        if (args.bucketId != -2 && !Utils.isAllVideoType(bucketContent)) {
             videos.add(bucketContent[position] as VideoContent)
             findNavController().navigate(
                 DetailFragmentDirections.actionDetailFragmentToVideoPlayerFragment(
@@ -126,7 +127,7 @@ class DetailFragment : Fragment() {
         position: Int
     ) {
         val pictures = mutableListOf<PictureContent>()
-        if (args.bucketId != -1 && pictures !is MutableList<PictureContent>) {
+        if (args.bucketId != -1 && !Utils.isAllPictureType(pictureList)) {
             pictures.add(pictureList[position] as PictureContent)
             findNavController().navigate(
                 DetailFragmentDirections.actionDetailFragmentToPreviewFragment(

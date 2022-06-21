@@ -1,7 +1,6 @@
 package com.chnouman.mycustomgalleryapp.ui.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chnouman.imagevideogallery.Utils.getBucketId
 import com.chnouman.mycustomgalleryapp.R
+import com.chnouman.mycustomgalleryapp.viewmodels.main.MainViewModel
 import com.chnouman.mycustomgalleryapp.databinding.FragmentMainBinding
-import com.chnouman.mycustomgalleryapp.backend.viewmodels.MainViewModel
 import com.chnouman.mycustomgalleryapp.utils.gone
-import com.chnouman.mycustomgalleryapp.utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,10 +43,9 @@ class MainFoldersFragment : Fragment() {
 
     private fun setupObserver() {
         viewModel.totalImages.observe(this) {
-            binding.totalStatsTextView.text = getString(R.string.dummy_stats, it.first, it.second)
+            binding.totalStatsTV.text = getString(R.string.dummy_stats, it.first, it.second)
         }
         viewModel.foldersData.observe(this) { folders ->
-            Log.d("TEST", "getFoldersCall Observer:")
             binding.progressBar.gone()
             foldersAdapter = FoldersAdapter(folders, { position ->
                 val folderWithOneImage = folders[position]
@@ -63,31 +59,34 @@ class MainFoldersFragment : Fragment() {
             }, {
                 //onLong press
             })
-            binding.videoFolderSelector.adapter = foldersAdapter
+            binding.videoFoldersRV.adapter = foldersAdapter
         }
     }
 
     private fun setupFolderSelector() {
         binding.apply {
-            switchView.setOnClickListener {
+            viewModel.getListViewMode()
+            switchIV.setOnClickListener {
                 foldersAdapter?.let {
                     //not doing logic for storing user preference for style at the moment
                     val isSwitched: Boolean = it.toggleItemViewType()
-                    videoFolderSelector.layoutManager =
+                    videoFoldersRV.layoutManager =
                         if (isSwitched) {
-                            switchView.setImageResource(R.drawable.ic_grid)
+                            viewModel.setListViewMode(0)
+                            switchIV.setImageResource(R.drawable.ic_grid)
                             GridLayoutManager(
                                 requireContext(),
                                 2
                             )
                         } else {
-                            switchView.setImageResource(R.drawable.ic_list)
+                            viewModel.setListViewMode(1)
+                            switchIV.setImageResource(R.drawable.ic_list)
                             LinearLayoutManager(requireContext())
                         }
                     it.notifyDataSetChanged()
                 }
             }
-            videoFolderSelector.apply {
+            videoFoldersRV.apply {
                 hasFixedSize()
                 setHasFixedSize(true)
                 setItemViewCacheSize(20)

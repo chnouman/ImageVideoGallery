@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/picture_zone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/imagepreview" />
-</layout>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pictureIV"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:contentDescription="@string/imagepreview" />

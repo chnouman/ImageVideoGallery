@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.ui.detail.play
+package com.chnouman.mycustomgalleryapp.ui.play
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -48,18 +48,18 @@ class VideoPlayerFragment : Fragment() {
         binding.apply {
             args.apply {
 
-                vidZone.apply {
+                videoView.apply {
                     setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
                     requestFocus()
-                    seeker.max = allVideos[currentVideoPosition].videoDuration.toInt()
+                    seekerSB.max = allVideos[currentVideoPosition].videoDuration.toInt()
                     start()
                     startUpdatingCallbackWithPosition()
-                    play.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                    playIB.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
                 }
             }
         }
         val handler = Handler()
-        val run = Runnable { binding.playerParent.gone() }
+        val run = Runnable { binding.playerParentCL.gone() }
         handler.postDelayed(run, 2000)
     }
 
@@ -67,8 +67,8 @@ class VideoPlayerFragment : Fragment() {
     private fun setUpViews(page: View) {
         binding.apply {
 
-            control.setOnClickListener {
-                playerParent.let {
+            controlView.setOnClickListener {
+                playerParentCL.let {
                     if (it.isGone()) {
                         it.visible()
                     } else {
@@ -76,19 +76,19 @@ class VideoPlayerFragment : Fragment() {
                     }
                 }
             }
-            rewind.setOnClickListener {
-                var current = vidZone.currentPosition
+            rewindTV.setOnClickListener {
+                var current = videoView.currentPosition
                 //rewind 10 seconds behind
                 current = if (current > 10000) {
                     current - 10000
                 } else {
                     0
                 }
-                vidZone.seekTo(current)
-                seeker.progress = current
+                videoView.seekTo(current)
+                seekerSB.progress = current
             }
-            forward.setOnClickListener {
-                var current = vidZone.currentPosition
+            forwardTV.setOnClickListener {
+                var current = videoView.currentPosition
                 //forward 10 seconds ahead
                 val max = args.allVideos[currentVideoPosition].videoDuration.toInt()
                 val diff = max - current
@@ -97,40 +97,40 @@ class VideoPlayerFragment : Fragment() {
                 } else {
                     max
                 }
-                vidZone.seekTo(current)
-                seeker.progress = current
+                videoView.seekTo(current)
+                seekerSB.progress = current
             }
-            previous.setOnClickListener { playPrevious() }
-            next.setOnClickListener { playNext() }
-            play.setOnClickListener {
-                vidZone.let {
+            previousIB.setOnClickListener { playPrevious() }
+            nextIB.setOnClickListener { playNext() }
+            playIB.setOnClickListener {
+                videoView.let {
                     if (it.isPlaying) {
                         it.pause()
-                        play.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
+                        playIB.setImageDrawable(resources.getDrawable(R.drawable.ic_play))
                     } else {
                         it.start()
-                        play.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
+                        playIB.setImageDrawable(resources.getDrawable(R.drawable.ic_pause))
                     }
                 }
             }
-            duration.text = convertDuration(args.allVideos[currentVideoPosition].videoDuration)
-            seeker.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            durationTV.text = convertDuration(args.allVideos[currentVideoPosition].videoDuration)
+            seekerSB.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 var userSelectedPosition = 0
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
                         userSelectedPosition = progress
                     }
-                    binding.progress.text = milliSecondsToTimer(progress.toLong())
+                    binding.progressTV.text = milliSecondsToTimer(progress.toLong())
                     seekBar.progress = progress
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {}
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    vidZone.seekTo(userSelectedPosition)
+                    videoView.seekTo(userSelectedPosition)
                 }
             })
-            vidZone.setOnCompletionListener {
-                vidZone.stopPlayback()
+            videoView.setOnCompletionListener {
+                videoView.stopPlayback()
                 stopUpdatingCallbackWithPosition()
                 playNext()
             }
@@ -143,17 +143,17 @@ class VideoPlayerFragment : Fragment() {
 
                 if (currentVideoPosition == allVideos.size - 1) {
                     currentVideoPosition = 0
-                    vidZone.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
-                    seeker.max = allVideos[currentVideoPosition].videoDuration.toInt()
-                    duration.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
-                    vidZone.start()
+                    videoView.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
+                    seekerSB.max = allVideos[currentVideoPosition].videoDuration.toInt()
+                    durationTV.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
+                    videoView.start()
                     startUpdatingCallbackWithPosition()
                 } else {
                     currentVideoPosition += 1
-                    vidZone.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
-                    seeker.max = allVideos[currentVideoPosition].videoDuration.toInt()
-                    duration.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
-                    vidZone.start()
+                    videoView.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
+                    seekerSB.max = allVideos[currentVideoPosition].videoDuration.toInt()
+                    durationTV.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
+                    videoView.start()
                     startUpdatingCallbackWithPosition()
                 }
             }
@@ -166,17 +166,17 @@ class VideoPlayerFragment : Fragment() {
 
                 if (currentVideoPosition == 0) {
                     currentVideoPosition = allVideos.size - 1
-                    vidZone.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
-                    seeker.max = allVideos[currentVideoPosition].videoDuration.toInt()
-                    duration.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
-                    vidZone.start()
+                    videoView.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
+                    seekerSB.max = allVideos[currentVideoPosition].videoDuration.toInt()
+                    durationTV.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
+                    videoView.start()
                     startUpdatingCallbackWithPosition()
                 } else {
                     currentVideoPosition -= 1
-                    vidZone.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
-                    seeker.max = allVideos[currentVideoPosition].videoDuration.toInt()
-                    duration.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
-                    vidZone.start()
+                    videoView.setVideoURI(Uri.parse(allVideos[currentVideoPosition].videoUri))
+                    seekerSB.max = allVideos[currentVideoPosition].videoDuration.toInt()
+                    durationTV.text = convertDuration(allVideos[currentVideoPosition].videoDuration)
+                    videoView.start()
                     startUpdatingCallbackWithPosition()
                 }
             }
@@ -204,14 +204,14 @@ class VideoPlayerFragment : Fragment() {
             mHandler!!.removeCallbacks(mSeekbarPositionUpdateTask!!)
             mHandler = null
             mSeekbarPositionUpdateTask = null
-            binding.seeker.progress = 0
+            binding.seekerSB.progress = 0
         }
     }
 
     private fun updateProgressCallbackTask() {
         binding.apply {
-            val currentPosition = vidZone.currentPosition
-            seeker.progress = currentPosition
+            val currentPosition = videoView.currentPosition
+            seekerSB.progress = currentPosition
         }
     }
 }

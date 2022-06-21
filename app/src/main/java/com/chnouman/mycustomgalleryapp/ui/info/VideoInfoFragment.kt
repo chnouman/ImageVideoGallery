@@ -1,6 +1,6 @@
-package com.chnouman.mycustomgalleryapp.ui.detail.info
+package com.chnouman.mycustomgalleryapp.ui.info
 
-
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +14,9 @@ import com.chnouman.imagevideogallery.MediaDataCalculator.convertBytes
 import com.chnouman.mycustomgalleryapp.R
 import com.chnouman.mycustomgalleryapp.databinding.FragmentInfoBinding
 
-class PictureInfoFragment : DialogFragment() {
+class VideoInfoFragment : DialogFragment() {
+    private val args: VideoInfoFragmentArgs by navArgs()
     private lateinit var binding: FragmentInfoBinding
-    private val args: PictureInfoFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,24 +25,17 @@ class PictureInfoFragment : DialogFragment() {
         dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         binding = FragmentInfoBinding.inflate(
             inflater, container, false
-        )
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            args.picture.apply {
-                filename.text = pictureName
-                fullpath.text = picturePath
-                size.text = convertBytes(pictureSize!!)
-                Glide.with(activity!!)
-                    .load(picturePath)
-                    .apply(
-                        RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
-                    )
-                    .into(pic)
-            }
+        ).apply {
+            fileNameTV.text = args.videoContent.videoName
+            fullPathTV.text = args.videoContent.path
+            sizeTV.text = convertBytes(args.videoContent.videoSize)
+            Glide.with(requireActivity())
+                .load(Uri.parse(args.videoContent.videoUri))
+                .apply(
+                    RequestOptions().placeholder(R.drawable.ic_launcher).centerCrop()
+                )
+                .into(picIV)
         }
+        return binding.root
     }
 }

@@ -1,4 +1,4 @@
-package com.chnouman.mycustomgalleryapp.backend.repository
+package com.chnouman.mycustomgalleryapp.data.repository
 
 import android.net.Uri
 import com.chnouman.imagevideogallery.models.PictureFolderContent
@@ -12,4 +12,6 @@ interface GalleryRepository {
     suspend fun getAllVideoContent(externalContentUri: Uri?): Collection<Any>
     suspend fun getAllPictureContentByBucketId(bucketId: Int): Collection<Any>
     suspend fun getAllVideoContentByBucketId(bucketId: Int): Collection<Any>
+    suspend fun saveUserViewModePrefs(viewMode:Int)
+    suspend fun getUserViewModePrefs(): Int
 }

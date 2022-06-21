@@ -69,4 +69,17 @@ object Utils {
             is VideoPictureFolderContent -> o.photos[0].photoUri ?: ""
             else -> ""
         }
+
+    fun isAllPictureType(pictureList: MutableList<Any>): Boolean {
+        for (any in pictureList) {
+            if (any !is PictureContent) return false
+        }
+        return true
+    }
+    fun isAllVideoType(pictureList: MutableList<Any>): Boolean {
+        for (any in pictureList) {
+            if (any !is VideoContent) return false
+        }
+        return true
+    }
 }
